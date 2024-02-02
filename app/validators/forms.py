@@ -11,16 +11,16 @@ class ClientForm(Form):
                 Length(min=5, max=32)
             ])
     secret = StringField()
-    client_type = IntegerField(validators=[DataRequired()])
+    type = IntegerField(validators=[DataRequired()])
 
-    def validate_client_type(self, value):
+    def validate_type(self, value):
         # 自定义 type 的验证器函数
         try:
             client = ClientTypeEnum(value.data)
         except ValueError as e:
-            raise e
+            raise ValidationError('Invalid client type')
 
-        self.client_type.data = client
+        self.type.data = client
 
 
 class UserEmailForm(ClientForm):
@@ -38,4 +38,4 @@ class UserEmailForm(ClientForm):
 
     def validate_account(self, value):
         if User.query.filter_by(email=value.data).first():
-            raise ValidationError()
+            raise ValidationError("邮箱已存在，请更换另外的邮箱")

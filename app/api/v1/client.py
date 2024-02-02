@@ -19,14 +19,20 @@ def register():
         promise = {
             ClientTypeEnum.USER_EMAIL: __register_user_by_email,
         }
-        func = promise.get(form.client_type.data, None)
+        func = promise.get(form.type.data, None)
         if func:
             func()
+        else:
+            print("未定义指定类型的处理函数")
+    else:
+        errors = form.errors
+        print(f"ClientForm errors = {errors}")
 
     return "register"
 
 
 def __register_user_by_email():
+    print("__register_user_by_email")
     form = UserEmailForm(data=request.json)
     # TODO 如果验证的 account 是已存在的邮箱，报错不准确
 
@@ -38,4 +44,4 @@ def __register_user_by_email():
             )
     else:
         errors = form.errors
-        print(f"errors = {errors}")
+        print(f"UserEmailForm errors = {errors}")
